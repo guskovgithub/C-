@@ -17,6 +17,7 @@ struct Node       //Структура являющаяся звеном спи�
     Node *next;
     Node *prev;//Указатели на адреса следующего и предыдущего элементов списка
 
+
 };
 
 
@@ -31,13 +32,13 @@ void append( List *list, Dot *dot);
 void print(List *list);
 void del(List *list, int pos);
 void find(List *list,  Dot *dot);
-void lenth(List *list);
+int lenth(List *list);
 
 
-void lenth(List *list) {
+int lenth(List *list) {
     Node *new_element = new Node();
     new_element = list->head;
-    if (list->head == NULL) cout << "список пуст"; int _lenth = 0;
+    if (list->head == NULL) return 0;
     if (list->head != NULL) {
         int _lenth = 1;
         while (new_element->next != NULL) {
@@ -45,7 +46,7 @@ void lenth(List *list) {
             new_element = new_element->next;
 
         }
-        cout <<  _lenth << endl;
+        return _lenth;
     }
  }
 
@@ -133,7 +134,36 @@ void del(List *list, int pos)
     cout<<"\nЭлемент удален...\n\n";
 
 }
+/* функция возвращает список точек такх, что расстояние до центра масс меньше заданного значения. Принимает квадрат радиуса */
+List ex(List *list, int  r_squre)
+{
+    List *new_list = new List();
+    int x = 0;
+    int y = 0;
+    Node *node = list->head;
+    while (node != NULL)
+    {
+        x += node->dot->x;
+        y += node->dot->y;
+        node  = node->next;
+    }
+    int x_c = x / lenth(list);
+    int y_c = y / lenth(list);
+    node = list->head;
+    while (node != NULL)
+    {
+        if ((node->dot->x-x_c)*(node->dot->x-x_c) + (node->dot->y-y_c)*(node->dot->y-y_c) < r_squre)
+        {
+            append(new_list, node->dot);
 
+        }
+        node  = node->next;
+
+    } return *new_list;
+
+
+
+}
 
 int main() {
     List mylist;
@@ -151,8 +181,7 @@ int main() {
 
 
     // фуннкция песатает длину списка
-    cout << "длина списка: ";
-    lenth(&mylist);
+
     // сделаем новую точку, чтобы проверить есть ли он в списке, а после вставить ее в список.
     Dot *mydot = new Dot();
     mydot->x = 1010;
@@ -164,9 +193,12 @@ int main() {
 
 
     print(&mylist);
-    cout << "длина списка: ";
-    lenth(&mylist);
+    cout << "длина списка: "  << lenth(&mylist) << endl;
+
     //удаляем третий элемент списка
     del(&mylist, 3);
+    cout << "длина списка: "  << lenth(&mylist) << endl;
+    List list = ex(&mylist, 200);
+    print(&list);
     return 0;
 }
